@@ -16,7 +16,7 @@ reset() {
 }
 
 rgb() {
-    ((hue+=4))
+    ((hue+=3))
     echo $hue > ~/.turtle_hue
 
     r=$(( (hue % 512) - 256 ))
@@ -33,39 +33,9 @@ rgb() {
 }
 
 colourise() {
-    foo=" $1"
+    foo=" $1 "
     for (( i=0; i<${#foo}; i++ )); do
         rgb ${foo:$i:1}
-    done
-}
-
-fade() {
-    bg $1 $2 $3
-    fg 0 0 0
-    echo -e -n "${4:- }"
-    reset
-}
-
-proportion() {
-    echo -e -n $(( (($1 * $2) + ($3 * $4)) / ($2 + $4) ))
-}
-
-fadeout() {
-
-    hue=$(cat ~/.turtle_hue || expr 0)
-
-    r=$(( (hue % 512) - 256 ))
-    r=${r#-}
-    g=$(( ((hue + 170) % 512) - 256 ))
-    g=${g#-}
-    b=$(( ((hue + 340) % 512) - 256 ))
-    b=${b#-}
-
-    foo=" $1"
-    for (( i=0; i<${#foo}; i++ )); do
-        k=$((i + 1))
-        j=$((${#foo} + 1 - k))
-        fade $(proportion r j 255 k) $(proportion g j 255 k) $(proportion b j 255 k) ${foo:$i:1}
     done
 }
 
@@ -75,4 +45,4 @@ GREEN="\001\e[0;32m\002"
 
 RETURN_CODE="\$(RET_CODE=\$?; if [[ \$RET_CODE == 0 ]]; then echo -e \"$GREEN\$RET_CODE$RESET_COLOUR\"; else echo -e \"$RED1 $RED2\$RET_CODE$RED1 $RESET_COLOUR\"; fi; )"
 
-export PS1="$RETURN_CODE \t \033[0m\n\$(colourise \W)\$(fadeout \"-=≡>\") "
+export PS1="$RETURN_CODE \t \033[0m\n\$(colourise \W) "
